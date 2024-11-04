@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: easy-boot
+  profiles:
+    active: test
+  mvc:
+    path-match:
+      matching-strategy: ant_path_matcher

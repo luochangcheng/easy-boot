@@ -1,0 +1,129 @@
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: ???
+    client-type: jedis
+    jedis:
+      pool:
+        max-active: 20
+        min-idle: 0
+        max-wait: -1
+        max-idle: 10
+        time-between-eviction-runs: 60000
+    timeout: 3000
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: ???
+    password: ???
+    listener:
+      simple:
+        #自动ack
+        acknowledge-mode: auto
+        concurrency: 5
+        max-concurrency: 10
+        retry:
+          max-attempts: 3
+          enabled: true
+  datasource:
+    url: jdbc:mysql://127.0.0.1:13307/db?characterEncoding=UTF-8&allowMultiQueries=true&useSSL=true
+    username: ???
+    password: ???
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      pool-name: ${spring.application.name}-hikari-pool
+      #连接池存活时间
+      minimum-idle: 10
+      maximum-pool-size: 20
+      idle-timeout: 60000
+
+mybatis-plus:
+  mapper-locations: classpath:cn/cc/easyboot/mapper/xml/*Mapper.xml
+  type-aliases-package: cn.cc.easyboot.po
+  type-handlers-package: io.github.luochangcheng.ccbootstartermybatisplus.common.config.handler.base
+  configuration:
+    #自动映射
+    auto-mapping-behavior: full
+    #发现自动映射目标未知列
+    auto-mapping-unknown-column-behavior: none
+    #嵌套语句使用结果处理器
+    safe-result-handler-enabled: true
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      #逻辑删除
+      logic-delete-field: isDeleted
+      logic-not-delete-value: false
+      logic-delete-value: true
+
+#接口文档
+knife4j:
+  enable: true
+
+ccboot:
+  #security配置
+  security:
+    admin:
+      #启用状态
+      enabled: true
+      #令牌前缀
+      token-prefix: 'Bearer '
+      #放行地址白名单
+      white-urls: [ "/v3/**", "/doc.html/**","/swagger-resources","/webjars/**", "/css/**", "/js/**" ,"/common/**" ]
+      #管理端输入错误上限上锁
+      admin-lock-up-num: 5
+      #管理端输入错误锁定时间【单位分钟】
+      admin-lock-in-minutes: 15
+      #管理端令牌过期时间【单位小时】
+      admin-token-expire-time: 720
+
+  knife4j:
+    address: http://127.0.0.1:8080
+    base-url: /
+    common-package: cn.cc.easyboot.controller.common
+
+  cache:
+    cache-map:
+      dict: 60
+
+  rabbitmq:
+    consumer: true
+    bind:
+      fanout-exchange-queue-map:
+        test-fanout-exchange: [ test-fanout-queue1, test-fanout-queue2, test-fanout-queue3 ]
+      direct-exchange-queue-map:
+        test-direct-exchange: { key: test-direct-queue, value: test-direct-key }
+      topic-exchange-queue-map:
+        test-topic-exchange:
+          test-topic-queue1: 'sys.#'
+          test-topic-queue2: '*.admin.*'
+          test-topic-queue3: '#.list'
+      fanout-delay-exchange-queue-map:
+        test-fanout-delay-exchange: [ test-fanout.delay-queue1, test-fanout.delay-queue2, test-fanout.delay-queue3 ]
+      direct-delay-exchange-queue-map:
+        test-direct-delay-exchange: { key: test-direct-delay-queue, value: test-direct-delay-key }
+      topic-delay-exchange-queue-map:
+        test-topic-delay-exchange:
+          test-topic-delay-queue1: 'sys.#'
+          test-topic-delay-queue2: '*.admin.*'
+          test-topic-delay-queue3: '#.list'
+
+  file:
+    upload-type: minio
+    minio:
+      #服务地址
+      url: http://127.0.0.1:9000
+      #代理地址
+      proxy-address: https://127.0.0.1:9000
+      #用户名
+      access-key: ???
+      #密码
+      secret-key: ???
+      #存储桶名称
+      bucket-name: coin
+      #允许上传文件类型
+      allow-file-type: [ txt,pdf,doc,docx,jpg,gif,png,jpeg,svg,mp4,xls,xlsx ]
+  log:
+    path: E:\logs
